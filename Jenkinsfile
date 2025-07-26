@@ -6,7 +6,7 @@ pipeline {
                 git 'https://github.com/<your-username>/<your-repo>.git'
             }
         }
-        stage('Build') {
+        stage('Build') 
             steps {
                 echo "Building the project..."
             }
