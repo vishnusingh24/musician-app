@@ -2,12 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "vishnusingh24/musician-app" // Change to your Docker Hub repo
+        DOCKER_IMAGE = "vishnusingh24/musician-app"
         NODE_ENV = "production"
-    }
-
-    tools {
-        nodejs "NodeJS"   // Ensure NodeJS is configured in Jenkins (Manage Jenkins > Global Tool Configuration)
     }
 
     stages {
@@ -19,22 +15,19 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                echo "Installing Node.js dependencies..."
-                sh 'npm install'
+                bat 'npm install'
             }
         }
 
         stage('Run Tests') {
             steps {
-                echo "Running Jest tests..."
-                sh 'npm test'
+                bat 'npm test'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                echo "Building Docker image..."
-                sh "docker build -t ${DOCKER_IMAGE}:latest ."
+                bat "docker build -t ${DOCKER_IMAGE}:latest ."
             }
         }
 
@@ -45,8 +38,8 @@ pipeline {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                        sh "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin"
-                        sh "docker push ${DOCKER_IMAGE}:latest"
+                        bat "echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin"
+                        bat "docker push ${DOCKER_IMAGE}:latest"
                     }
                 }
             }
@@ -54,7 +47,7 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                echo "Deploying the app (you can add kubectl, SSH, or docker-compose steps here)."
+                echo "Deploying the app (add deployment steps here)."
             }
         }
     }
@@ -72,3 +65,4 @@ pipeline {
         }
     }
 }
+
